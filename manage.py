@@ -1,22 +1,21 @@
 #!/usr/bin/env python
-"""Django's command-line utility for administrative tasks."""
 import os
 import sys
 
+SUPPORTED_ENVS = ('test', 'example')
 
-def main():
-    """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')
-    try:
-        from django.core.management import execute_from_command_line
-    except ImportError as exc:
-        raise ImportError(
-            "Couldn't import Django. Are you sure it's installed and "
-            "available on your PYTHONPATH environment variable? Did you "
-            "forget to activate a virtual environment?"
-        ) from exc
+SETTINGS_MODULES = {
+    'example': 'example.settings'
+}
+
+ENV = os.environ.get('ENV', 'example')
+ENV = ENV.lower()
+
+if ENV not in SUPPORTED_ENVS:
+    raise Exception('Unsupported environment: %s' % ENV)
+
+
+if __name__ == "__main__":
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', SETTINGS_MODULES[ENV])
+    from django.core.management import execute_from_command_line
     execute_from_command_line(sys.argv)
-
-
-if __name__ == '__main__':
-    main()
